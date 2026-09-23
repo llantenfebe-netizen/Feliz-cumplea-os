@@ -1,0 +1,130 @@
+---
+---
+
+<!-- Sobre -->
+<div class="flex flex-col items-center justify-center py-10 w-full">
+  <div id="envelope-wrapper" class="relative w-full max-w-lg h-64 md:h-80 cursor-pointer transition-all duration-500" style="perspective: 2000px;">
+
+    <!-- Envelope Back -->
+    <div class="absolute inset-0 bg-brand-900 rounded-xl shadow-2xl z-10 border border-brand-700/50"></div>
+
+    <!-- Envelope Front Left -->
+    <div class="absolute top-0 left-0 w-full h-full bg-brand-700 z-30 pointer-events-none" style="clip-path: polygon(0 0, 50% 50%, 0 100%);"></div>
+
+    <!-- Envelope Front Right -->
+    <div class="absolute top-0 left-0 w-full h-full bg-brand-700 z-30 pointer-events-none" style="clip-path: polygon(100% 0, 100% 100%, 50% 50%);"></div>
+
+    <!-- Envelope Front Bottom -->
+    <div class="absolute top-0 left-0 w-full h-full bg-brand-400 z-30 pointer-events-none" style="clip-path: polygon(0 100%, 50% 50%, 100% 100%);"></div>
+
+    <!-- Envelope Flap (Top) -->
+    <div id="envelope-flap" class="absolute top-0 left-0 w-full h-1/2 bg-brand-500 origin-top z-40 transition-transform duration-700 ease-in-out" style="clip-path: polygon(0 0, 100% 0, 50% 100%);"></div>
+
+    <!-- Seal -->
+    <div id="envelope-seal" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-red-600 rounded-full z-50 flex items-center justify-center shadow-lg border-2 border-red-800 transition-all duration-300">
+      <span class="text-white font-bold text-2xl">❤</span>
+    </div>
+
+    <!-- Helper texto -->
+    <p id="click-helper" class="absolute -bottom-14 left-0 w-full text-center text-white/90 animate-bounce font-bold tracking-wide pointer-events-none z-50">
+      TOCA EL SOBRE PARA ABRIR
+    </p>
+  </div>
+</div>
+
+<!-- MODAL: Carta (overlay de pantalla completa) -->
+<div
+  id="letter-modal"
+  class="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-10 invisible opacity-0 transition-all duration-500"
+  style="background: rgba(19,28,70,0.85); backdrop-filter: blur(10px);"
+>
+  <div
+    id="letter-card"
+    class="relative w-full max-w-2xl bg-white/15 border border-white/30 rounded-3xl shadow-2xl p-10 md:p-16 transition-all duration-500 scale-75 opacity-0"
+    style="backdrop-filter: blur(20px);"
+  >
+    <!-- Botón cerrar X -->
+    <button
+      id="close-letter"
+      class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/30 border border-white/30 text-white flex items-center justify-center transition-all duration-200 hover:scale-110"
+      aria-label="Cerrar carta"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Decoración esquinas -->
+    <div class="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-brand-500/40 to-transparent rounded-tl-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-brand-700/40 to-transparent rounded-br-3xl pointer-events-none"></div>
+
+    <div class="text-center mb-8 relative z-10">
+      <p class="text-brand-200 text-sm font-semibold tracking-widest uppercase mb-2">✉ Con todo el cariño</p>
+      <h2 class="text-5xl md:text-6xl font-bold text-white drop-shadow-md font-serif italic">Para Ti</h2>
+    </div>
+
+    <div class="text-white text-center font-medium leading-loose space-y-6 text-base md:text-xl relative z-10">
+      <p>¡Feliz Cumpleaños! Que este nuevo año de vida esté lleno de tantas aventuras como las de Goku.</p>
+      <p>Sigue persiguiendo tus sueños, entrenando duro y alcanzando nuevos niveles de poder. Eres una persona increíble y mereces lo mejor.</p>
+      <p class="text-white font-bold text-xl md:text-2xl pt-4 border-t border-white/20">
+        ¡Que la pases genial hoy! 🎉✨
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const envelope  = document.getElementById('envelope-wrapper');
+  const flap      = document.getElementById('envelope-flap');
+  const seal      = document.getElementById('envelope-seal');
+  const helper    = document.getElementById('click-helper');
+  const modal     = document.getElementById('letter-modal');
+  const card      = document.getElementById('letter-card');
+  const closeBtn  = document.getElementById('close-letter');
+
+  function openLetter() {
+    // Animación sobre
+    seal!.style.opacity = '0';
+    flap!.style.transform = 'rotateX(180deg)';
+
+    setTimeout(() => {
+      envelope!.style.opacity = '0';
+      envelope!.style.transform = 'scale(0.85)';
+      helper!.style.opacity = '0';
+
+      // Mostrar modal
+      modal!.style.visibility = 'visible';
+      modal!.style.opacity = '1';
+      card!.style.opacity = '1';
+      card!.style.transform = 'scale(1)';
+    }, 500);
+  }
+
+  function closeLetter() {
+    card!.style.opacity = '0';
+    card!.style.transform = 'scale(0.75)';
+
+    setTimeout(() => {
+      modal!.style.opacity = '0';
+      modal!.style.visibility = 'hidden';
+
+      // Restaurar sobre
+      envelope!.style.opacity = '1';
+      envelope!.style.transform = 'scale(1)';
+      helper!.style.opacity = '1';
+
+      setTimeout(() => {
+        flap!.style.transform = 'rotateX(0deg)';
+        setTimeout(() => { seal!.style.opacity = '1'; }, 400);
+      }, 200);
+    }, 300);
+  }
+
+  envelope!.addEventListener('click', openLetter);
+  closeBtn!.addEventListener('click', closeLetter);
+
+  // Cerrar también al hacer clic fuera de la tarjeta
+  modal!.addEventListener('click', (e) => {
+    if (e.target === modal) closeLetter();
+  });
+</script>

@@ -1,0 +1,141 @@
+---
+const items = [
+  { file: 'imagen 1.jpeg', text: 'Momentos inolvidables' },
+  { file: 'imagen 2.jpeg', text: 'Siempre sonriendo' },
+  { file: 'imagen 3.jpeg', text: 'Aventuras increíbles' },
+  { file: 'imagen 4.jpeg', text: 'Grandes recuerdos' },
+  { file: 'imagen 5.jpeg', text: 'Tiempos felices' },
+  { file: 'imagen 6.jpeg', text: 'Juntos es mejor' },
+  { file: 'imagen 7.jpeg', text: 'Días para recordar' },
+  { file: 'imagen 8.jpeg', text: 'Magia pura' },
+  { file: 'imagen 9.jpeg', text: 'Pura felicidad' }
+];
+---
+
+<section class="space-y-8 w-full">
+  <!-- Título -->
+  <div class="text-center">
+    <h2 class="text-4xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+      Galería de Recuerdos
+    </h2>
+    <div class="w-24 h-1 bg-white mx-auto mt-2 rounded-full"></div>
+  </div>
+
+  <!-- Carrusel -->
+  <div class="relative w-full max-w-md mx-auto overflow-hidden rounded-2xl" id="carousel">
+
+    <!-- Track -->
+    <div
+      id="carousel-track"
+      class="flex transition-transform duration-500 ease-in-out"
+      style="will-change: transform;"
+    >
+      {items.map((item) => (
+        <div class="min-w-full relative" style="aspect-ratio: 3/2;">
+          <img
+            src={`/galeria/${item.file}`}
+            alt={item.text}
+            class="w-full h-full object-cover"
+          />
+          <!-- Overlay texto -->
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-900/80 via-transparent to-transparent flex items-end">
+            <p class="text-white text-xl md:text-2xl font-bold drop-shadow-lg p-6 w-full text-center tracking-wide">
+              {item.text}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Botón anterior -->
+    <button
+      id="prev-btn"
+      class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-brand-900/70 hover:bg-brand-700 border border-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 hover:scale-110 shadow-lg"
+      aria-label="Anterior"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+
+    <!-- Botón siguiente -->
+    <button
+      id="next-btn"
+      class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-brand-900/70 hover:bg-brand-700 border border-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-200 hover:scale-110 shadow-lg"
+      aria-label="Siguiente"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+
+    <!-- Contador slide -->
+    <div class="absolute top-4 right-4 z-20 bg-brand-900/60 backdrop-blur-sm text-white text-sm font-semibold px-3 py-1 rounded-full border border-white/20">
+      <span id="current-slide">1</span> / {items.length}
+    </div>
+  </div>
+
+  <!-- Dots indicadores -->
+  <div class="flex justify-center gap-2 pt-2" id="dots-container">
+    {items.map((_, i) => (
+      <button
+        class={`dot w-2.5 h-2.5 rounded-full transition-all duration-300 border border-white/40 ${i === 0 ? 'bg-white w-6' : 'bg-white/30'}`}
+        data-index={i}
+        aria-label={`Ir a foto ${i + 1}`}
+      ></button>
+    ))}
+  </div>
+</section>
+
+<script>
+  const track = document.getElementById('carousel-track') as HTMLElement;
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const dots = document.querySelectorAll<HTMLButtonElement>('.dot');
+  const currentSlideEl = document.getElementById('current-slide');
+  const total = dots.length;
+  let current = 0;
+  let autoTimer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    current = (index + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    currentSlideEl!.textContent = String(current + 1);
+
+    dots.forEach((dot, i) => {
+      if (i === current) {
+        dot.classList.add('bg-white', 'w-6');
+        dot.classList.remove('bg-white/30');
+      } else {
+        dot.classList.remove('bg-white', 'w-6');
+        dot.classList.add('bg-white/30');
+      }
+    });
+  }
+
+  function resetTimer() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => goTo(current + 1), 4000);
+  }
+
+  prevBtn?.addEventListener('click', () => { goTo(current - 1); resetTimer(); });
+  nextBtn?.addEventListener('click', () => { goTo(current + 1); resetTimer(); });
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { goTo(i); resetTimer(); });
+  });
+
+  // Swipe táctil
+  let startX = 0;
+  track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', (e) => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? goTo(current + 1) : goTo(current - 1);
+      resetTimer();
+    }
+  }, { passive: true });
+
+  // Auto-play
+  resetTimer();
+</script>

@@ -1,0 +1,54 @@
+---
+---
+<div class="bg-brand-700/80 backdrop-blur-md rounded-full px-6 py-4 shadow-xl border border-brand-500/50 mx-auto w-full max-w-sm flex items-center justify-between transition-transform hover:scale-105">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 bg-gradient-to-br from-brand-400 to-brand-500 rounded-full flex items-center justify-center shadow-lg relative overflow-hidden">
+      <div class="w-3 h-3 bg-brand-900 rounded-full z-10"></div>
+      <div class="absolute inset-0 border-2 border-white/20 rounded-full" id="disk"></div>
+    </div>
+    <div>
+      <h3 class="font-bold text-white leading-tight">Feliz Cumpleaños</h3>
+      <p class="text-xs text-white/90 font-medium drop-shadow-sm">Trio Hermanos Devia</p>
+    </div>
+  </div>
+  
+  <button id="playBtn" class="w-10 h-10 bg-white text-brand-900 rounded-full flex items-center justify-center shadow-md hover:bg-brand-200 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400">
+    <!-- Play Icon -->
+    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 ml-1">
+      <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
+    </svg>
+    <!-- Pause Icon -->
+    <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 hidden">
+      <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  
+  <audio id="bg-audio" src="/audio/Feliz Cumpleaños - Trio Hermanos Devia.mp3" loop preload="auto"></audio>
+</div>
+
+<script>
+  const playBtn = document.getElementById('playBtn');
+  const audio = document.getElementById('bg-audio') as HTMLAudioElement;
+  const iconPlay = document.getElementById('icon-play');
+  const iconPause = document.getElementById('icon-pause');
+  const disk = document.getElementById('disk');
+  
+  let isPlaying = false;
+  
+  if (playBtn && audio) {
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        audio.pause();
+        iconPlay?.classList.remove('hidden');
+        iconPause?.classList.add('hidden');
+        disk?.classList.remove('animate-[spin_3s_linear_infinite]');
+      } else {
+        audio.play().catch(e => console.log("Audio play failed:", e));
+        iconPlay?.classList.add('hidden');
+        iconPause?.classList.remove('hidden');
+        disk?.classList.add('animate-[spin_3s_linear_infinite]');
+      }
+      isPlaying = !isPlaying;
+    });
+  }
+</script>

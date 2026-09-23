@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Letter from '../components/Letter.astro';
+import Gallery from '../components/Gallery.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+---
+
+<Layout title="¡Feliz Cumpleaños!">
+  <main class="container mx-auto px-4 py-12 flex flex-col items-center gap-12 relative overflow-hidden">
+    <!-- Decoraciones Goku (Stickers) -->
+    <div class="absolute top-10 left-4 md:left-20 opacity-40 pointer-events-none w-32 md:w-48 z-0 -rotate-12">
+      <img src="/goku.png" alt="Goku Sticker" class="w-full h-auto drop-shadow-[0_0_15px_rgba(7,138,239,0.5)]" />
+    </div>
+    <div class="absolute top-32 right-4 md:right-24 opacity-30 pointer-events-none w-24 md:w-40 z-0 rotate-12">
+      <img src="/goku.png" alt="Goku Sticker" class="w-full h-auto drop-shadow-[0_0_15px_rgba(7,138,239,0.5)]" />
+    </div>
+    <div class="fixed bottom-10 left-10 opacity-30 pointer-events-none w-48 md:w-64 z-0 -rotate-6">
+      <img src="/goku.png" alt="Goku Sticker" class="w-full h-auto drop-shadow-[0_0_15px_rgba(7,138,239,0.5)]" />
+    </div>
+    <div class="absolute top-1/2 -right-10 opacity-20 pointer-events-none w-56 md:w-80 z-0 rotate-45">
+      <img src="/goku.png" alt="Goku Sticker" class="w-full h-auto drop-shadow-[0_0_15px_rgba(7,138,239,0.5)]" />
+    </div>
+    <div class="absolute bottom-32 right-10 opacity-40 pointer-events-none w-32 md:w-56 z-0 -rotate-12">
+      <img src="/goku.png" alt="Goku Sticker" class="w-full h-auto drop-shadow-[0_0_15px_rgba(7,138,239,0.5)]" />
+    </div>
+
+    <!-- Header con Animación -->
+    <header class="text-center z-10 space-y-4">
+      <h1 class="text-5xl md:text-7xl font-extrabold text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-pulse">
+        ¡Feliz Cumpleaños!
+      </h1>
+      <p class="text-xl md:text-2xl text-white font-medium drop-shadow-md">Espero que tengas un día súper especial 🎉</p>
+    </header>
+
+    <div class="z-10 w-full max-w-4xl flex flex-col gap-16">
+      <MusicPlayer />
+      <Letter />
+      <Gallery />
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import confetti from 'canvas-confetti';
+
+  window.addEventListener('load', () => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#078aef', '#3591d8', '#80c4f9', '#ffffff'] 
+      });
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#078aef', '#3591d8', '#80c4f9', '#ffffff']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+  });
+</script>
