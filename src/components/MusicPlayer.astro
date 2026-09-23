@@ -26,29 +26,56 @@
   <audio id="bg-audio" src="/audio/Feliz Cumpleaños - Trio Hermanos Devia.mp3" loop preload="auto"></audio>
 </div>
 
+
 <script>
   const playBtn = document.getElementById('playBtn');
   const audio = document.getElementById('bg-audio') as HTMLAudioElement;
   const iconPlay = document.getElementById('icon-play');
   const iconPause = document.getElementById('icon-pause');
   const disk = document.getElementById('disk');
-  
+
   let isPlaying = false;
-  
-  if (playBtn && audio) {
-    playBtn.addEventListener('click', () => {
-      if (isPlaying) {
-        audio.pause();
-        iconPlay?.classList.remove('hidden');
-        iconPause?.classList.add('hidden');
-        disk?.classList.remove('animate-[spin_3s_linear_infinite]');
-      } else {
-        audio.play().catch(e => console.log("Audio play failed:", e));
-        iconPlay?.classList.add('hidden');
-        iconPause?.classList.remove('hidden');
-        disk?.classList.add('animate-[spin_3s_linear_infinite]');
-      }
-      isPlaying = !isPlaying;
-    });
+
+  function setPlayingState(playing: boolean) {
+    isPlaying = playing;
+    if (playing) {
+      iconPlay?.classList.add('hidden');
+      iconPause?.classList.remove('hidden');
+      disk?.classList.add('animate-[spin_3s_linear_infinite]');
+    } else {
+      iconPlay?.classList.remove('hidden');
+      iconPause?.classList.add('hidden');
+      disk?.classList.remove('animate-[spin_3s_linear_infinite]');
+    }
   }
+
+  // Intentar autoplay al cargar
+  window.addEventListener('load', () => {
+    audio.volume = 0.7;
+    audio.play()
+      .then(() => {
+        setPlayingState(true);
+      })
+      .catch(() => {
+        // El navegador bloqueó el autoplay — esperar primer clic del usuario
+        setPlayingState(false);
+        const startOnClick = () => {
+          audio.play().then(() => setPlayingState(true));
+          document.removeEventListener('click', startOnClick);
+        };
+        document.addEventListener('click', startOnClick);
+      });
+  });
+
+  // Botón de play/pause manual
+  playBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isPlaying) {
+      audio.pause();
+      setPlayingState(false);
+    } else {
+      audio.play().then(() => setPlayingState(true));
+    }
+  });
 </script>
+
